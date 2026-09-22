@@ -14,7 +14,7 @@ def get_prepared_data():
     X_numpy = vectorizer.fit_transform(df["text"]).toarray()
 
     label_encoder = LabelEncoder()
-    y_numpy = label_encoder.fit_transform(df["topic"])
+    y_numpy = label_encoder.fit_transform(df["category"])
 
     X_tensor = torch.tensor(X_numpy, dtype=torch.float32)
     y_tensor = torch.tensor(y_numpy, dtype=torch.long)
