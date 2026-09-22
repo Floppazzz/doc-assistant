@@ -12,7 +12,7 @@ def main():
     print("=== Инициализация обучения ===")
 
     # 1. Загрузка подготовленных тензоров из vectorize.py
-    X, y = get_prepared_data(data)
+    X, y = get_prepared_data()
     in_features = X.shape[1]  # 1000 признаков TF-IDF
     num_classes = int(y.max()) + 1  # Динамически вычисляем число классов
 
