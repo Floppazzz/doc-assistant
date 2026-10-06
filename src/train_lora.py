@@ -1,0 +1,120 @@
+import torch 
+import torch.nn as nn 
+from torch.utils.data import TensorDataset, DataLoader
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, f1_score
+
+#Ипортируем инсрументы PEFT для работы с LoRA
+from peft import LoraConfig, get_peft_model
+
+# Ипортируем модули из ЛР №3 и №4
+from vectorize import get_prepared_data
+from model import TextClassifier
+
+def evaluate_model(model, dataloader, loss_fn):
+    """Функции для расчёта Loss, Accuracy и F1-score"""
+    model.eval()
+    total_loss = 0
+    all_preds = []
+    all_labels = []
+
+    with torch.no_grad():
+        for batch_X, batch_y in dataloader:
+            logits = model(batch_X)
+            loss = loss_fn(logits, batch_y)
+            total_loss += loss.item()
+
+            _, predicted = torch.max(logits, dim=1)
+            all_preds.extend(predicted.cpu().numpy())
+            all_labels.extend(batch_y.cpu().numpy())
+
+    avg_loss = total_loss / len(dataloader)
+    acc = accuracy_score(all_labels, all_preds)
+    f1 = f1_score(all_labels, all_preds, average='weighted', zero_division=0)
+    return avg_loss, acc, f1
+
+def run_lora_experiment(rank_value):
+    print(f"\n=== Запуск эксперимента с LoRA, rank={rank_value} ===")
+    # 1. Загрузка данных (пары вход -> целевой выход из ЛР№3)
+    X, y = get_prepared_data()
+    in_features = X.shape[1]
+    num_classes = int(y.max()) + 1
+
+    #Разделение выборки на Train/Test (80/20) как в ЛР №4
+
+    X_tr, X_te, y_tr, y_te = train_test_split(X.numpy(), y.numpy(), test_size=0.2, random_state=42)
+
+    train_dataset = TensorDataset(torch.tensor(X_tr, dtype=torch.float32),
+                                  torch.tensor(y_tr, dtype=torch.long))
+    test_dataset = TensorDataset(torch.tensor(X_te, dtype=torch.float32),
+                                 torch.tensor(y_te, dtype=torch.long))
+
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+    # 2. Инициализация базовых моделей и замер Baseline (Точка отсчёта)
+    base_model = TextClassifier(in_features=in_features, num_classes=num_classes)
+    loss_fn = nn.CrossEntropyLoss()
+
+    _, base_acc, base_f1 = evaluate_model(base_model, test_loader, loss_fn)
+    print(f"""[Baseline] Качество сырой модели до обучения => Accuracy: {base_acc:.4f}, F1-score: {base_f1:.4f}""")
+
+    # 3. Применение LoRA схемы
+    # Конфигурируем адаптер под тип задачи SEQ_CLS (Sequence Classification)
+    #print(base_model)
+    lora_config = LoraConfig(
+        r = rank_value,
+        lora_alpha = 16,
+        target_modules = ["0"], # Направляем LoRA на первый линейный слой
+        lora_dropout = 0.1
+    )
+
+    # Оборачиваем базовую модель в PEFT-адаптер
+    model = get_peft_model(base_model, lora_config)
+
+    # Вывод доли обучаемых параметров сети в консоль
+    print("Проверка обучаемых параметров:")
+    model.print_trainable_parameters()
+
+    # 4. Короткий цикл обучения
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    num_epochs = 2
+    acc = base_acc
+
+    print(f"Старт короткого дообучения адаптеров на {num_epochs} эпохах...")
+    for epoch in range(num_epochs):
+        model.train()
+        for batch_X, batch_y in train_loader:
+            optimizer.zero_grad()
+            logits = model(batch_X)
+            loss = loss_fn(logits, batch_y)
+            loss.backward()
+            optimizer.step()
+
+        # 5. Замер качества ПОСЛЕ LoRA-обучения на том же тест-сете
+        _, acc, f1 = evaluate_model(model, test_loader, loss_fn)
+        print(f"Эпоха {epoch + 1}/{num_epochs} [После LoRA] r={rank_value} => Accuracy: {acc:.4f}, F1-score: {f1:.4f}")
+
+        #6. Сохранение маленьких адаптеров
+        if rank_value == 4:
+            output_dir =  "models/lora-adapter"
+            model.save_pretrained(output_dir)
+            print(f"Веса LoRA-адаптеров сохранены в директории: {output_dir}")
+
+    return acc
+
+def main():
+    #Сравнивание рангов LoRA (r=4 vs r=16)
+    acc_r = run_lora_experiment(rank_value=4)
+    acc_r16 = run_lora_experiment(rank_value=16)
+
+    #Основной замер и сохранение с базовым рангом r=4
+    run_lora_experiment(rank_value=8)
+    print("\n=== Эксперимент завершён ===")
+    print(f"""Итооговое сравнение точности:
+    Ранг r=4 => Accuracy: {acc_r:.4f}
+    Ранг r=16 => Accuracy: {acc_r16:.4f}""")
+
+
+if __name__ == "__main__":
+    main()

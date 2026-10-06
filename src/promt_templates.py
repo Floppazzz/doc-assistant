@@ -33,7 +33,7 @@ if __name__ == "__main__":
     try:
         parced_json = json.loads(raw_response.strip())
         print("Успех! Данные успешно преобразованы в python dict:")
-        print(f"Тоналпьность: {parsed_json.get('sentiment')}")
+        print(f"Тоналпьность: {parced_json.get('sentiment')}")
         print(f"Плюсы:{parced_json.get('pros')}")
         print(f"Минусы: {parced_json.get('cons')}")
     except json.JSONDecodeError:
