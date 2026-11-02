@@ -2,26 +2,26 @@ import pandas as pd
 import torch
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import LabelEncoder
-from pathlib import Path 
+from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_PATH = BASE_DIR / ".." / "data" / "processed" / "clean.csv"
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_PATH = BASE_DIR / "data" / "processed" / "clean.csv"
 
 def get_prepared_data():
-    df = pd.read_csv(DATA_PATH)  # убраны кавычки
+    df = pd.read_csv(DATA_PATH)
 
     vectorizer = TfidfVectorizer(max_features=1000)
-    X_numpy = vectorizer.fit_transform(df["text"]).toarray()
+    x_numpy = vectorizer.fit_transform(df["text"])
 
     label_encoder = LabelEncoder()
-    y_numpy = label_encoder.fit_transform(df["category"])
+    y_numpy = label_encoder.fit_transform(df["topic"])
 
-    X_tensor = torch.tensor(X_numpy, dtype=torch.float32)
+    x_tensor = torch.tensor(x_numpy.toarray(), dtype=torch.float32)
     y_tensor = torch.tensor(y_numpy, dtype=torch.long)
 
-    print(f"Обнаружено классов(тем): {len(label_encoder.classes_)}")  # добавлен f
+    print(f"Обнаружено классов (тем): {len(label_encoder.classes_)}")
 
-    return X_tensor, y_tensor
+    return x_tensor, y_tensor
 
 if __name__ == "__main__":
     get_prepared_data()
