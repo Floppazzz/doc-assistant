@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # Устанавливаем системные зависимости для компиляции (нужны для faiss / numpy)
 
@@ -14,9 +14,9 @@ ENV HF_HOME=/app/cache/hugginface \
     PYTHONPATH=/app\
     PYTHONUNBUFERED=1
 
-COPY requirements.txt .
+COPY requirements3.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements3.txt
 
 COPY src/ ./src/
 COPY .env .
