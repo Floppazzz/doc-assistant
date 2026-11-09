@@ -17,7 +17,7 @@ def load_rag_assets():
     if not FAISS_INDEX_PATH.exists() or not DOCS_PICKLE_PATH.exists():
         raise FileNotFoundError("Ошибка: Файлы базы FAISS не найдены. Сначала запустите build_index.py")
         
-    # Ленивостный SentenceTransformer загружаем прямо здесь
+    # SentenceTransformer загружаем прямо здесь
     from sentence_transformers import SentenceTransformer
     print("Загрузка индекса FAISS и модели эмбеддингов...")
     

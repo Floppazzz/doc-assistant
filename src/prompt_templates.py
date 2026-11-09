@@ -83,8 +83,8 @@ if __name__ == "__main__":
         print(f"Тональность (sentiment): {parsed_json.get('sentiment')}")
 
         if parsed_json.get("topic") == true_topic:
-            print(f"\n✅ Предсказание совпало с разметкой датасета: {true_topic}")
+            print(f"\nПредсказание совпало с разметкой датасета: {true_topic}")
         else:
-            print(f"\n❌ Расхождение: модель сказала '{{}}', в датасете '{{}}'".format(parsed_json.get("topic"), true_topic))
+            print(f"\nРасхождение: модель сказала '{{}}', в датасете '{{}}'".format(parsed_json.get("topic"), true_topic))
     except json.JSONDecodeError:
         print("Ошибка: Модель нарушила формат и вернула невалидный JSON.")
