@@ -1,0 +1,39 @@
+text,category
+Pandas is a powerful library for data manipulation and analysis in Python.,python
+Machine learning models are only as good as the data.,data_science
+Data cleaning is the most important step in any machine learning pipeline.,data_science
+Scikit-learn provides simple and efficient tools for predictive data analysis.,python
+Feature engineering is the process of using domain knowledge to extract features.,data_science
+Neural networks are inspired by the biological neural networks in the brain.,data_science
+Jupyter Notebook is an open-source web application for interactive computing.,python
+Overfitting occurs when a model learns the detail and noise in the training data.,data_science
+Cross-validation is a statistical method used to estimate the skill of ML models.,data_science
+This is a text with weird spacing and tabs \t\t to test the regex.,general
+Git is essential for tracking changes in your codebase during development.,devops
+DVC helps version control your machine learning datasets and models efficiently.,devops
+Regularization is a technique used to prevent overfitting in machine learning.,data_science
+Hyperparameter tuning is the process of choosing the optimal set of parameters.,data_science
+Lots of extra spaces here to test the regex cleaning.,python
+Transfer learning allows us to leverage pre-trained models for new tasks.,data_science
+Natural language processing enables computers to understand human language.,data_science
+Computer vision algorithms allow machines to interpret visual information.,data_science
+Reinforcement learning trains models to make decisions by rewarding actions.,data_science
+Unsupervised learning finds hidden patterns in data without pre-existing labels.,data_science
+Supervised learning uses labeled datasets to train algorithms to predict outcomes.,data_science
+Deep learning is a subset of machine learning based on artificial neural networks.,data_science
+Convolutional neural networks are primarily used for image recognition tasks.,data_science
+Recurrent neural networks are designed to recognize patterns in sequences of data.,data_science
+Generative adversarial networks consist of two neural networks contesting each other.,data_science
+Random forests are an ensemble learning method for classification and regression.,python
+Gradient boosting is a machine learning technique for regression and classification.,python
+Support vector machines construct a hyperplane to separate different classes.,python
+K-means clustering partitions data into k distinct clusters based on distance.,python
+Principal component analysis reduces the dimensionality of large datasets.,python
+Time series analysis involves studying historical data to forecast future trends.,data_science
+Anomaly detection identifies rare items or events that differ significantly.,data_science
+Data augmentation increases the diversity of data available for training models.,data_science
+Batch normalization helps to stabilize and accelerate the training process.,python
+Dropout is a regularization technique to prevent overfitting in neural networks.,python
+Adam optimizer is an algorithm for gradient-based optimization of stochastic obj.,python
+Loss functions measure how well a model performs on a given dataset.,python
+Accuracy is the ratio of correctly predicted observations to the total.,data_science
