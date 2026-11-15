@@ -1,2 +1,9 @@
 .venv
 .env
+__pycache__/
+data/raw
+data/processed/clean.csv
+data/vector_db/
+.ipynb_checkpoints/
+ollama/
+models/
