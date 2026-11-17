@@ -1,4 +1,5 @@
-import os
+from pathlib import Path
+
 import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
@@ -52,7 +53,7 @@ def run_lora_experiment(rank_value):
                                  torch.tensor(y_te, dtype=torch.long))
     
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=32)
     
     # 2. Инициализация базовой модели и замер Baseline (Точка отсчета)
     base_model = TextClassifier(in_features=in_features, num_classes=num_classes)
@@ -101,7 +102,7 @@ def run_lora_experiment(rank_value):
     
     # 6. Сохранение маленьких адаптеров
     if rank_value == 8:
-        output_dir = "models/lora-adapter"
+        output_dir = Path(__file__).resolve().parents[2] / "models" / "lora-adapter"
         model.save_pretrained(output_dir)
         print(f"Веса LoRA-адаптеров успешно сохранены в папку: {output_dir}")
     
